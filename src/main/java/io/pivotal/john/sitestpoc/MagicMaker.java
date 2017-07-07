@@ -25,7 +25,7 @@ public class MagicMaker {
 
 	public MagicMaker() throws InterruptedException {
 		log.info("*** Magic Maker coming to life...");
-		Thread.sleep(20_000);  // simulate "expensive" app ctx start-up; easier to notice re-instantiation in tests.
+//		Thread.sleep(20_000);  // simulate "expensive" app ctx start-up; easier to notice re-instantiation in tests.
 		log.info("*** Magic Maker ready to make the magic...");
 	}
 

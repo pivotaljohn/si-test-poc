@@ -26,7 +26,7 @@ import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class MockedMagicJazzTest {
+public abstract class MockedMagicJazzTest {
 
 	@Autowired
 	private JmsTemplate jmsTemplate;
