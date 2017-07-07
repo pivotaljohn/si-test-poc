@@ -3,11 +3,15 @@ package io.pivotal.john.sitestpoc.base;
 import io.pivotal.john.sitestpoc.Groove;
 import io.pivotal.john.sitestpoc.MagicMaker;
 import io.pivotal.john.sitestpoc.Music;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.Lifecycle;
+import org.springframework.integration.dsl.IntegrationFlow;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -30,6 +34,23 @@ public class MockedMagicJazzTest {
 	@MockBean()
 	private MagicMaker magicMaker;
 
+	@Autowired
+	private IntegrationFlow jazz;
+
+	public void startupIntegration() {
+		Lifecycle hiphop = (Lifecycle) jazz;
+		if(!hiphop.isRunning()) {
+			hiphop.start();
+		}
+	}
+
+	public void shutdownIntegration() {
+		Lifecycle hiphop = (Lifecycle) jazz;
+		if(hiphop.isRunning()) {
+			hiphop.stop();
+		}
+	}
+
 	@Test
 	public void jazz_flows() throws InterruptedException {
 		CountDownLatch musicToBeMade = new CountDownLatch(6);
@@ -46,8 +67,12 @@ public class MockedMagicJazzTest {
 		theSoul.add(new Groove("Rockit", 5));
 		theSoul.add(new Groove("Sweet Bird",6));
 
-		theSoul.forEach(g -> jmsTemplate.convertAndSend("the.vibe", g));
-		musicToBeMade.await(1_000, TimeUnit.MILLISECONDS);
-		assertThat(musicToBeMade.getCount()).isEqualTo(0);
+		try {
+			theSoul.forEach(g -> jmsTemplate.convertAndSend("the.vibe", g));
+			musicToBeMade.await(1_000, TimeUnit.MILLISECONDS);
+			assertThat(musicToBeMade.getCount()).isEqualTo(0);
+		} finally {
+			shutdownIntegration();
+		}
 	}
 }
