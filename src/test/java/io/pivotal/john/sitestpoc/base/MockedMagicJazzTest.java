@@ -53,6 +53,7 @@ public class MockedMagicJazzTest {
 
 	@Test
 	public void jazz_flows() throws InterruptedException {
+		startupIntegration();
 		CountDownLatch musicToBeMade = new CountDownLatch(6);
 		when(magicMaker.bibby(any(Groove.class))).then(invocation -> {
 			musicToBeMade.countDown();
